@@ -210,8 +210,9 @@ func (raft *Raft) Worker() {
 			return
 		case <-raft.electionTimeout.C:
 			if raft.state == CANDIDATE {
+				raft.electionTimeout.Reset(time.Millisecond * time.Duration(rand.Int63n(3000)+150))
 				raft.state = FOLLOWER
-				raft.electionTimeout.Reset(time.Millisecond * time.Duration(rand.Int63n(10000)+1000))
+				raft.Term++
 				continue
 			}
 
@@ -325,7 +326,7 @@ func main() {
 				case "leader_heartbeat":
 					raft.electionTimeoutLock.Lock()
 					atomic.StoreInt64(&raft.lastLeaderPing, time.Now().UnixMilli())
-					raft.electionTimeout.Reset(time.Millisecond * time.Duration(rand.Int63n(10000)+1000))
+					raft.electionTimeout.Reset(time.Millisecond * time.Duration(rand.Int63n(1500)+1500))
 					raft.electionTimeoutLock.Unlock()
 				case "vote_request":
 					log.Println("My state is:", raft.state)
