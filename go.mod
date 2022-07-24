@@ -1,6 +1,6 @@
 module github.com/lemon-mint/raft-study
 
-go 1.17
+go 1.18
 
 require github.com/lemon-mint/frameio v1.2.0
 
